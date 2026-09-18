@@ -1,5 +1,4 @@
-French in 90 Days v3: incorporates the supplied 8-stage interactive Day 1 flow, plus Vocabulary Notebook, automatic flashcards, local saving, and Android-installable PWA configuration. Upload all files to the root of the existing Gucci GitHub repository, replacing the older files.
-
-## v4 conversation fix
-- Accepts natural equivalent answers and ignores harmless punctuation/apostrophe differences.
-- A wrong answer now shows a correct model answer and unlocks Continue, so the learner never gets stuck.
+# French in 90 Days — v5 repair
+Fixes the blank Build stage caused by old saved progress and fixes the extra ninth stage circle.
+It preserves the interactive lesson, vocabulary, flashcards, conversation fallback behavior, and Android PWA setup.
+Upload all files to the existing repository root and replace matching files.
