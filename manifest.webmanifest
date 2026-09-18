@@ -1,0 +1,37 @@
+{
+  "name": "French in 90 Days",
+  "short_name": "French 90 Days",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fbf7ff",
+  "theme_color": "#806bd8",
+  "description": "A structured A1 French speaking journey.",
+  "id": "./",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="French in 90 Days — an interactive A1 French speaking program">
+<title>French in 90 Days</title>
+<meta name="theme-color" content="#806bd8"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="French 90 Days"><link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">French<br>in 90 Days<small>SMALL STEPS · BIG CONVERSATIONS</small></div>
+  <nav>
+    <button class="nav active" data-view="lesson">🏠 Home</button><button class="nav" data-view="journey">🗺️ My Journey</button>
+    <button class="nav" data-view="lesson">📅 Daily Lesson</button><button class="nav" data-view="vocabulary">📖 Vocabulary</button>
+    <button class="nav" data-view="flashcards">🧠 Flashcards</button><button class="nav" data-view="lesson">▶️ Video Library</button>
+    <button class="nav" data-view="lesson">🏡 Homework</button><button class="nav" data-view="lesson">💬 AI Practice</button>
+    <button class="nav" data-view="journey">📊 Progress</button>
+  </nav>
+</aside>
+<main>
+<div id="lessonView" class="app-view">
+<section class="hero">
+  <div><span class="eyebrow">YOUR FRENCH JOURNEY</span>
+  <h1>Bonjour! 👋</h1><h2>Day <span id="dayNumber">1</span> of 90</h2>
+  <p>Your goal: <b>Speak French in 3 months 🇫🇷</b></p>
+  <div class="quote">« Un jour à la fois, tu y arriveras. » ♥</div></div>
+</section>
+
+<div class="journey-card">
+  <div class="journey-top"><div><span class="eyebrow">TODAY'S JOURNEY</span><h2>Se présenter</h2><p>Move through one stage at a time. Try first — help comes after your attempt.</p></div><div class="stage-count"><b id="stageNumber">1</b>/8</div></div>
+  <div class="stage-progress"><i id="stageBar"></i></div>
+  <div class="stage-dots" id="stageDots"></div>
+</div>
+
+<div class="content">
+<section class="lesson-panel">
+
+<div class="stage active-stage" data-stage="0">
+  <div class="stage-heading"><span class="stage-icon purple">📖</span><div><span class="badge">STAGE 1</span><h2>Learn</h2><p>Meet today's French phrases one at a time.</p></div></div>
+  <div id="learnCard" class="interactive-card"></div>
+  <div class="stage-actions"><button id="learnNext" class="primary">I learned it →</button></div>
+</div>
+
+<div class="stage" data-stage="1">
+  <div class="stage-heading"><span class="stage-icon yellow">🧩</span><div><span class="badge">STAGE 2</span><h2>Build</h2><p>Choose the missing word. The answer is hidden until you try.</p></div></div>
+  <div id="buildCard" class="interactive-card"></div>
+  <div class="stage-actions"><button id="buildCheck" class="primary">Check</button><button id="buildNext" class="secondary" hidden>Continue →</button></div>
+  <div id="buildMessage" class="message" aria-live="polite"></div>
+</div>
+
+<div class="stage" data-stage="2">
+  <div class="stage-heading"><span class="stage-icon yellow">✏️</span><div><span class="badge">STAGE 3</span><h2>Writing</h2><p>Complete each sentence without looking back at the lesson.</p></div></div>
+  <div class="exercise"><label>1. Je m'________ Sheila.</label><input class="answer" data-answer="appelle" autocomplete="off"><label>2. J'________ à Saint-Didier.</label><input class="answer" data-answer="habite" autocomplete="off"><label>3. J'________ trois enfants.</label><input class="answer" data-answer="ai" autocomplete="off"><label>4. J'________ cuisiner.</label><input class="answer" data-answer="aime" autocomplete="off"></div>
+  <button id="writingCheck" class="primary">Check my answers</button>
+  <div id="writingMessage" class="message" aria-live="polite"></div>
+  <div class="stage-actions"><button id="writingNext" class="secondary" hidden>Continue →</button></div>
+</div>
+
+<div class="stage" data-stage="3">
+  <div class="stage-heading"><span class="stage-icon pink">🗣️</span><div><span class="badge">STAGE 4</span><h2>Speaking</h2><p>Answer aloud. There is no typing required here.</p></div></div>
+  <div id="speakingCard" class="interactive-card"></div>
+  <div class="stage-actions"><button id="speakingNext" class="primary">I answered aloud →</button></div>
+</div>
+
+<div class="stage" data-stage="4">
+  <div class="stage-heading"><span class="stage-icon coral">💬</span><div><span class="badge">STAGE 5 · FRENCH IN ACTION</span><h2>Conversation</h2><p>You are meeting someone new. Reply naturally — no word bank, no hints.</p></div></div>
+  <div id="conversationCard" class="interactive-card conversation"></div>
+  <div class="stage-actions"><button id="conversationCheck" class="primary">Send answer</button><button id="conversationNext" class="secondary" hidden>Continue →</button></div>
+  <div id="conversationMessage" class="message" aria-live="polite"></div>
+</div>
+
+<div class="stage" data-stage="5">
+  <div class="stage-heading"><span class="stage-icon teal">🇫🇷</span><div><span class="badge">STAGE 6 · FRENCH IN REAL LIFE</span><h2>Book French vs Real-Life French</h2><p>Learn the standard form and the natural everyday version side by side.</p></div></div>
+  <div id="realLifeCard" class="interactive-card"></div>
+  <div class="stage-actions"><button id="realLifeNext" class="primary">Got it →</button></div>
+</div>
+
+<div class="stage" data-stage="6">
+  <div class="stage-heading"><span class="stage-icon blue">🎧</span><div><span class="badge">STAGE 7</span><h2>Listening</h2><p>Watch French With Julie and listen for French you recognize.</p></div></div>
+  <div class="video-card"><b>Your listening mission 🎧</b><p>Watch for about 15 minutes. Listen for <b>3 French words or expressions</b> you recognize.</p><textarea id="videoNotes" placeholder="1. ...&#10;2. ...&#10;3. ..."></textarea><a class="primary link-button" href="https://youtube.com/@frenchwithjulie" target="_blank" rel="noopener">Watch French With Julie ↗</a></div>
+  <label class="check-row"><input id="listeningDone" type="checkbox"> I watched and completed the listening mission.</label>
+  <div class="stage-actions"><button id="listeningNext" class="primary" disabled>Continue →</button></div>
+</div>
+
+<div class="stage" data-stage="7">
+  <div class="stage-heading"><span class="stage-icon green">🏡</span><div><span class="badge">STAGE 8</span><h2>Real-Life Mission</h2><p>Take French out of the app and into your day.</p></div></div>
+  <div class="homework-box"><b>Your mission:</b> Introduce yourself aloud three times today using at least three French sentences. If you get the opportunity, say <b>« Bonjour ! Ça va ? »</b> to someone.</div>
+  <label class="check-row"><input id="homeworkDone" type="checkbox"> Homework completed.</label>
+  <div class="stage-actions"><button id="finish" class="primary" disabled>🏆 Complete Day 1</button></div>
+  <div id="finishMessage" class="message" aria-live="polite"></div>
+</div>
+
+</section>
+
+<aside class="right">
+<div class="side-card"><h3>Your 90-Day Progress</h3><div class="ring"><span id="percent">1%</span></div><p>1 of 90 days</p><div class="bar"><i id="bar"></i></div><em>Progress, not perfection. ♥</em></div>
+<div class="side-card motivation"><h3>☀️ Today's Motivation</h3><p>“You don't have to be perfect to speak French. You just have to start.”</p></div>
+<div class="side-card quick"><h3>Today's stages</h3><div>📖 Learn</div><div>🧩 Build</div><div>✏️ Writing</div><div>🗣️ Speaking</div><div>💬 French in Action</div><div>🇫🇷 French in Real Life</div><div>🎧 Listening</div><div>🏡 Real Life</div></div>
+</aside>
+</div>
+</div>
+<section id="vocabularyView" class="app-view hidden"><section class="page-head"><span class="eyebrow">MY FRENCH WORDS</span><h1>Vocabulary Notebook</h1><p>Save French you learn during the day. Every saved item automatically becomes a flashcard.</p></section><div class="vocab-grid"><section class="stage active-stage"><h2>Add vocabulary</h2><label class="field">French<input id="vFrench" placeholder="e.g. Ça marche"></label><label class="field">English<input id="vEnglish" placeholder="e.g. That works / OK"></label><label class="field">Example / note (optional)<textarea id="vExample"></textarea></label><button id="addWord" class="primary">Save word</button><div id="vocabMessage" class="message"></div></section><aside class="side-card vocab-stats"><h3>My vocabulary</h3><strong id="wordCount">0</strong><p>words & phrases saved</p><button class="primary" data-view="flashcards">Practice flashcards →</button></aside></div><section class="side-card"><div class="list-title"><h3>Saved words</h3><button id="clearWords" class="text-btn">Clear all</button></div><div id="vocabList"></div></section></section>
+<section id="flashcardsView" class="app-view hidden"><section class="page-head"><span class="eyebrow">ACTIVE RECALL</span><h1>My Flashcards</h1><p>Practice the vocabulary you collected throughout the day.</p></section><div class="flash-controls"><button id="frToEn" class="pill active">French → English</button><button id="enToFr" class="pill">English → French</button><span id="cardPosition"></span></div><div id="emptyCards" class="side-card">You haven't saved any vocabulary yet.</div><div id="flashArea" class="flash-wrap hidden"><div class="flashcard"><small id="cardPromptLabel"></small><strong id="cardFront"></strong><div id="cardBackWrap" class="answer-side hidden"><small id="cardAnswerLabel"></small><b id="cardBack"></b><em id="cardExample"></em></div></div><div class="flash-actions"><button id="reveal" class="primary">Reveal answer</button><button id="again" class="secondary hidden">Practice again</button><button id="know" class="primary hidden">✓ I know it</button></div></div></section>
+<section id="journeyView" class="app-view hidden"><section class="page-head"><span class="eyebrow">YOUR JOURNEY</span><h1>My Progress</h1><p>Your interactive lesson progress is saved automatically.</p></section><section class="side-card"><h3>Day 1 · Se présenter</h3><p id="journeyStage"></p><div class="stage-progress"><i id="journeyBar"></i></div><p><b id="journeyWords">0</b> vocabulary items saved</p></section></section></main>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

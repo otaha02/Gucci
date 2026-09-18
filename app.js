@@ -1,0 +1,65 @@
+const stages=[...document.querySelectorAll('.stage')];
+const stageDots=document.getElementById('stageDots');
+const stageNumber=document.getElementById('stageNumber');
+const stageBar=document.getElementById('stageBar');
+const stateKey='french90_day1_interactive_v2';
+let state=JSON.parse(localStorage.getItem(stateKey)||'null')||{stage:0,learn:0,build:0,writing:false,conversation:0,realLife:false,listening:false,homework:false};
+
+const learnItems=[
+ {fr:'Je m\'appelle Sheila.',en:'My name is Sheila.'},
+ {fr:'J\'ai trois enfants.',en:'I have three children.'},
+ {fr:'J\'habite à Saint-Didier.',en:'I live in Saint-Didier.'},
+ {fr:'J\'aime cuisiner.',en:'I like cooking.'}
+];
+const buildItems=[
+ {before:"Je m'",after:' Sheila.',answer:'appelle',choices:['appelle','habite','aime']},
+ {before:"J'",after:' à Saint-Didier.',answer:'habite',choices:['aime','habite','ai']},
+ {before:"J'",after:' trois enfants.',answer:'ai',choices:['ai','appelle','habite']},
+ {before:"J'",after:' cuisiner.',answer:'aime',choices:['habite','aime','ai']}
+];
+const speaking=['Comment tu t\'appelles ?','Où est-ce que tu habites ?','Tu as combien d\'enfants ?','Qu\'est-ce que tu aimes faire ?'];
+const conversation=[
+ {person:'Marie',prompt:'Bonjour ! Comment tu t\'appelles ?',answers:['Je m\'appelle Sheila.','Moi, c\'est Sheila.']},
+ {person:'Marie',prompt:'Enchantée ! Tu habites où ?',answers:['J\'habite à Saint-Didier.']},
+ {person:'Marie',prompt:'Ah, d\'accord ! Tu as des enfants ?',answers:['J\'ai trois enfants.','Oui, j\'ai trois enfants.']},
+ {person:'Marie',prompt:'Et qu\'est-ce que tu aimes faire ?',answers:['J\'aime cuisiner.','J\'aime cuisiner.']}
+];
+
+function save(){localStorage.setItem(stateKey,JSON.stringify(state));}
+function renderDots(){stageDots.innerHTML=stages.map((_,i)=>`<button type="button" class="dot ${i<state.stage?'done':''} ${i===state.stage?'current':''}" data-dot="${i}" aria-label="Stage ${i+1}">${i<state.stage?'✓':i+1}</button>`).join('');stageDots.querySelectorAll('.dot').forEach(b=>b.addEventListener('click',()=>{const i=Number(b.dataset.dot);if(i<=state.stage)showStage(i)}));}
+function showStage(i){state.stage=Math.max(0,Math.min(7,i));stages.forEach((s,n)=>s.classList.toggle('active-stage',n===state.stage));stageNumber.textContent=state.stage+1;stageBar.style.width=((state.stage+1)/8*100)+'%';renderDots();save();window.scrollTo({top:0,behavior:'smooth'});}
+function initLearn(){const item=learnItems[state.learn];const card=document.getElementById('learnCard');card.innerHTML=`<div class="phrase-big">${item.fr}</div><div class="translation ${state.learn===learnItems.length-1?'':'hidden'}" id="learnTranslation">${item.en}</div><button type="button" class="ghost" id="showTranslation">Tap to reveal meaning</button><div class="tiny-progress">Phrase ${state.learn+1} of ${learnItems.length}</div>`;document.getElementById('showTranslation').addEventListener('click',()=>{document.getElementById('learnTranslation').classList.remove('hidden');document.getElementById('showTranslation').remove();});}
+function initBuild(){const item=buildItems[state.build];const card=document.getElementById('buildCard');card.innerHTML=`<div class="build-sentence"><span>${item.before}</span><span class="blank">_____</span><span>${item.after}</span></div><div class="choices">${item.choices.map(c=>`<button type="button" class="choice" data-choice="${c}">${c}</button>`).join('')}</div><div class="tiny-progress">Question ${state.build+1} of ${buildItems.length}</div>`;card.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{card.querySelectorAll('.choice').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');card.dataset.selected=b.dataset.choice;}));document.getElementById('buildMessage').textContent='';document.getElementById('buildCheck').hidden=false;document.getElementById('buildNext').hidden=true;}
+function initSpeaking(){const q=speaking[state.speaking||0];document.getElementById('speakingCard').innerHTML=`<div class="question-number">Question ${(state.speaking||0)+1} of ${speaking.length}</div><div class="prompt">${q}</div><p class="muted">Answer in French out loud. Take your time.</p>`;}
+function initConversation(){const idx=state.conversation;const card=document.getElementById('conversationCard');if(idx>=conversation.length){card.innerHTML='<div class="success-card">🎉 Conversation complete! You carried the conversation yourself.</div>';document.getElementById('conversationCheck').hidden=true;document.getElementById('conversationNext').hidden=false;return;}const item=conversation[idx];card.innerHTML=`<div class="chat-bubble"><span>${item.person}</span><b>${item.prompt}</b></div><textarea id="conversationAnswer" placeholder="Write your response in French..." aria-label="Your response"></textarea><div class="tiny-progress">Turn ${idx+1} of ${conversation.length}</div>`;document.getElementById('conversationMessage').textContent='';document.getElementById('conversationCheck').hidden=false;document.getElementById('conversationNext').hidden=true;}
+function initRealLife(){document.getElementById('realLifeCard').innerHTML=`<div class="compare"><div class="compare-card"><span>📖 BOOK / STANDARD</span><b>Je m'appelle Sheila.</b><em>Standard and completely correct.</em></div><div class="versus">or</div><div class="compare-card natural"><span>🗣️ EVERYDAY FRENCH</span><b>Moi, c'est Sheila.</b><em>Very natural in an everyday introduction.</em></div></div><div class="explain">Both work. The goal is to understand both forms and recognize what people naturally say around you.</div>`;}
+function updateFinish(){const done=state.homework&&state.listening;document.getElementById('finish').disabled=!done;}
+
+// Learn
+document.getElementById('learnNext').addEventListener('click',()=>{if(state.learn<learnItems.length-1){state.learn++;initLearn();save();}else showStage(1);});
+// Build
+document.getElementById('buildCheck').addEventListener('click',()=>{const selected=document.getElementById('buildCard').dataset.selected||'';const item=buildItems[state.build];const msg=document.getElementById('buildMessage');if(!selected){msg.textContent='Choose an answer first.';return;}if(selected===item.answer){msg.textContent='✓ Correct!';state.build++;document.getElementById('buildCheck').hidden=true;document.getElementById('buildNext').hidden=false;save();}else msg.textContent='Not quite. Try again.';});
+document.getElementById('buildNext').addEventListener('click',()=>{if(state.build<buildItems.length)initBuild();else showStage(2);});
+// Writing
+function normalize(s){return s.toLowerCase().trim().replace(/[’']/g,"'").replace(/\s+/g,' ');}
+document.getElementById('writingCheck').addEventListener('click',()=>{const inputs=[...document.querySelectorAll('.answer')];let correct=0;inputs.forEach(x=>{const ok=normalize(x.value)===normalize(x.dataset.answer);x.classList.toggle('correct',ok);x.classList.toggle('incorrect',!ok);if(ok)correct++;});const msg=document.getElementById('writingMessage');msg.textContent=correct===4?'✓ All four are correct!':`${correct} of 4 correct. Try the highlighted ones again.`;if(correct===4){state.writing=true;document.getElementById('writingNext').hidden=false;save();}});
+document.getElementById('writingNext').addEventListener('click',()=>showStage(3));
+// Speaking
+document.getElementById('speakingNext').addEventListener('click',()=>{const i=state.speaking||0;if(i<speaking.length-1){state.speaking=i+1;initSpeaking();save();}else showStage(4);});
+// Conversation
+document.getElementById('conversationCheck').addEventListener('click',()=>{const input=document.getElementById('conversationAnswer');if(!input||!input.value.trim()){document.getElementById('conversationMessage').textContent='Write your answer first.';return;}const idx=state.conversation;const item=conversation[idx];const text=normalize(input.value);const ok=item.answers.some(a=>text===normalize(a));const msg=document.getElementById('conversationMessage');if(ok){msg.textContent='✓ Great answer. The conversation continues.';state.conversation++;document.getElementById('conversationCheck').hidden=true;document.getElementById('conversationNext').hidden=false;save();}else{msg.textContent='Keep going — your answer can be phrased differently. For this beginner practice, try a simple sentence that answers the question.';}});
+document.getElementById('conversationNext').addEventListener('click',()=>{if(state.conversation<conversation.length){initConversation();}else showStage(5);});
+// Real life
+document.getElementById('realLifeNext').addEventListener('click',()=>{state.realLife=true;showStage(6);save();});
+// Listening
+document.getElementById('listeningDone').addEventListener('change',e=>{state.listening=e.target.checked;document.getElementById('listeningNext').disabled=!state.listening;save();});
+document.getElementById('listeningNext').addEventListener('click',()=>showStage(7));
+// Homework / finish
+document.getElementById('homeworkDone').addEventListener('change',e=>{state.homework=e.target.checked;updateFinish();save();});
+document.getElementById('finish').addEventListener('click',()=>{document.getElementById('finishMessage').textContent='🎉 Day 1 complete! You finished the full interactive lesson.';state.stage=7;save();});
+
+initLearn();initBuild();initSpeaking();initConversation();initRealLife();
+document.getElementById('listeningDone').checked=!!state.listening;document.getElementById('homeworkDone').checked=!!state.homework;updateFinish();showStage(state.stage);
+if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).then(r=>r.update()).catch(()=>{}));
+
+const VKEY='french90_vocabulary_v1';let words=JSON.parse(localStorage.getItem(VKEY)||'[]');function saveWords(){localStorage.setItem(VKEY,JSON.stringify(words))}function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}function renderWords(){wordCount.textContent=words.length;journeyWords.textContent=words.length;vocabList.innerHTML=words.length?words.slice().reverse().map((w,r)=>{let i=words.length-1-r;return `<div class="word-row"><div><b>${esc(w.fr)}</b><small>${esc(w.example||'')}</small></div><div>${esc(w.en)}</div><button class="delete-word" data-delete="${i}">✕</button></div>`}).join(''):'<p>No words saved yet.</p>';document.querySelectorAll('[data-delete]').forEach(b=>b.onclick=()=>{words.splice(+b.dataset.delete,1);saveWords();renderWords();resetCards()})}addWord.onclick=()=>{let fr=vFrench.value.trim(),en=vEnglish.value.trim(),example=vExample.value.trim();if(!fr||!en){vocabMessage.textContent='Add both French and English first.';return}words.push({fr,en,example});saveWords();vFrench.value=vEnglish.value=vExample.value='';vocabMessage.textContent='✓ Saved — now in your flashcards.';renderWords();resetCards()};clearWords.onclick=()=>{if(words.length&&confirm('Clear all saved vocabulary?')){words=[];saveWords();renderWords();resetCards()}};let direction='fr-en',deck=[],cardIndex=0;function resetCards(){deck=[...words];cardIndex=0;renderCard()}function renderCard(){if(!deck.length){emptyCards.classList.remove('hidden');flashArea.classList.add('hidden');cardPosition.textContent='';return}emptyCards.classList.add('hidden');flashArea.classList.remove('hidden');let w=deck[cardIndex%deck.length],f=direction==='fr-en';cardPromptLabel.textContent=f?'FRENCH':'ENGLISH';cardAnswerLabel.textContent=f?'ENGLISH':'FRENCH';cardFront.textContent=f?w.fr:w.en;cardBack.textContent=f?w.en:w.fr;cardExample.textContent=w.example||'';cardBackWrap.classList.add('hidden');reveal.classList.remove('hidden');again.classList.add('hidden');know.classList.add('hidden');cardPosition.textContent=`Card ${cardIndex+1} of ${deck.length}`}reveal.onclick=()=>{cardBackWrap.classList.remove('hidden');reveal.classList.add('hidden');again.classList.remove('hidden');know.classList.remove('hidden')};know.onclick=()=>{cardIndex=(cardIndex+1)%deck.length;renderCard()};again.onclick=()=>{let w=deck.splice(cardIndex,1)[0];deck.push(w);if(cardIndex>=deck.length)cardIndex=0;renderCard()};frToEn.onclick=()=>{direction='fr-en';frToEn.classList.add('active');enToFr.classList.remove('active');resetCards()};enToFr.onclick=()=>{direction='en-fr';enToFr.classList.add('active');frToEn.classList.remove('active');resetCards()};function updateJourney(){let s=Math.min(8,(state.stage||0)+1);journeyStage.textContent=`Current stage: ${s} of 8`;journeyBar.style.width=(s/8*100)+'%'}function showView(n){document.querySelectorAll('.app-view').forEach(v=>v.classList.add('hidden'));(document.getElementById(n+'View')||lessonView).classList.remove('hidden');document.querySelectorAll('.nav').forEach(x=>x.classList.toggle('active',x.dataset.view===n));if(n==='vocabulary')renderWords();if(n==='flashcards')resetCards();if(n==='journey')updateJourney();scrollTo(0,0)}document.querySelectorAll('[data-view]').forEach(x=>x.addEventListener('click',()=>showView(x.dataset.view)));renderWords();resetCards();updateJourney();
