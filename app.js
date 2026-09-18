@@ -1,7 +1,0 @@
-const tasks=[...document.querySelectorAll('.task')], progressText=document.getElementById('progressText'), status=document.getElementById('status'), finish=document.getElementById('finish'), bar=document.getElementById('bar'), percent=document.getElementById('percent');
-const saved=JSON.parse(localStorage.getItem('french90_day1')||'[]'); tasks.forEach((x,i)=>x.checked=!!saved[i]);
-function update(){const done=tasks.filter(x=>x.checked).length,total=tasks.length;progressText.textContent=`${done} of ${total} activities completed`;status.textContent=done===total?'Amazing — you completed everything!':'Complete every activity, then finish Day 1.';finish.disabled=done!==total;localStorage.setItem('french90_day1',JSON.stringify(tasks.map(x=>x.checked)));}
-tasks.forEach(x=>x.addEventListener('change',update));
-document.getElementById('checkWriting').addEventListener('click',()=>{const text=document.getElementById('writing').value.toLowerCase();const answers=['m appelle','habite','ai','aime'];const ok=answers.every(a=>text.includes(a));document.getElementById('writingMessage').textContent=ok?'✓ Looks good! Compare with the phrases above.':'Keep trying — use: m’appelle, habite, ai, aime.';});
-finish.addEventListener('click',()=>alert('🎉 Day 1 complete! Your next lesson is coming soon.'));
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{}); update();
